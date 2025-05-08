@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat System</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .main-content {
+            display: flex;
+            width: 100%;
+        }
+        .chat-container {
+            display: flex;
+            flex-grow: 1;
+            padding: 20px;
+        }
+        .contacts {
+            width: 30%;
+            background: #333;
+            color: white;
+            border-radius: 10px;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        .contacts h3 {
+            margin-bottom: 15px;
+        }
+        .contacts ul {
+            list-style: none;
+            padding: 0;
+        }
+        .contacts li {
+            padding: 10px;
+            border-bottom: 1px solid #444;
+            cursor: pointer;
+        }
+        .contacts li:hover {
+            background: #444;
+        }
+        .chat-area {
+            width: 70%;
+            background: #fff;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .chat-box {
+            overflow-y: auto;
+            max-height: 400px;
+        }
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .message.sent {
+            background: #333;
+            color: white;
+            text-align: right;
+        }
+        .message.received {
+            background: #575757;
+            color: white;
+            text-align: left;
+        }
+        .input-area {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        .input-area input {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .input-area button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+        }
+        .input-area button:hover {
+            background-color: #575757;
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/sidebar') %>
+
+    <div class="main-content">
+        <div class="chat-container">
+            <div class="contacts">
+                <h3>Contacts</h3>
+                <ul>
+                    <li>President</li>
+                    <li>Vice-President</li>
+                    <li>FE Head</li>
+                </ul>
+            </div>
+            <div class="chat-area">
+                <div class="chat-box" id="chat-box">
+                    <!-- Messages will appear here -->
+                </div>
+                <div class="input-area">
+                    <input type="text" id="message-input" placeholder="Type a message...">
+                    <button id="send-btn">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+        var chatBox = document.getElementById("chat-box");
+        var input = document.getElementById("message-input");
+        var sendBtn = document.getElementById("send-btn");
+
+        sendBtn.addEventListener("click", function() {
+            var message = input.value;
+            if (message.trim() !== "") {
+                socket.emit("chat message", message);
+                input.value = "";
+            }
+        });
+
+        socket.on("chat message", function(msg) {
+            var messageElement = document.createElement("div");
+            messageElement.classList.add("message", "received");
+            messageElement.innerText = msg;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+    </script>
+</body>
+</html>

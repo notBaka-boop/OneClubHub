@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+
+    /* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body and layout */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+    background-color: #f4f4f4;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #333;
+    color: white;
+    padding: 20px;
+}
+
+.sidebar .logo {
+    margin-bottom: 30px;
+}
+
+.sidebar .logo h2 {
+    color: #fff;
+    text-align: center;
+}
+
+.sidebar .nav {
+    list-style-type: none;
+}
+
+.sidebar .nav li {
+    margin: 15px 0;
+}
+
+.sidebar .nav li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.sidebar .nav li a:hover {
+    background-color: #444;
+}
+
+.main-content {
+    flex-grow: 1;
+    background-color: white;
+    padding: 30px;
+    margin-left: 250px;
+}
+
+.header h1 {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.cards {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    width: 100%;
+    text-align: center;
+}
+
+.card h3 {
+    margin-bottom: 10px;
+}
+
+.custom-card:hover {
+	transform: scale(1.05) translateY(-10px);
+	box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+}
+
+ .card-container {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 30px;
+	padding: 30px;
+}
+
+.custom-card {
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+	border: none;
+	border-radius: 15px;
+	overflow: hidden;
+}
+
+.custom-card:hover {
+	transform: scale(1.05) translateY(-10px);
+	box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+}
+
+.card-img-top {
+	height: 200px;
+	object-fit: cover;
+	border-radius: 50%;
+}
+</style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <h2>Home</h2>
+        </div>
+        <ul class="nav ">
+            <li><a href="/home" class="nav-link">Home Page</a></li>
+            <li><a href="/myprofile" class="nav-link">Profile</a></li>           
+            <li><a href="/notification" class="nav-link">Notifications</a></li>
+            <li><a href="/myclub" class="nav-link">My Clubs</a></li>
+            <li><a href="/logout" class="nav-link">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Notifications</h1>
+        </div>
+        <div class="cards">
+            <div class="card">
+				16 Feb 2025:  Xenia'25 Tug of War R3 starts at 5 pm
+            </div>
+		</div>
+		<br>
+		<div class="cards">
+            <div class="card">
+                16 Feb 2025:  Xenia'25 Tug of War R2 starts at 4 pm
+            </div>
+		</div>
+		<br>
+		<div class="cards">
+			<div class="card">
+                14 Feb 2025: Xenia'25 Hack-o-Warts registration deadline: 8 pm
+            </div>
+		</div>
+		<br>
+		<div class="cards">
+            <div class="card">
+                14 Feb 2025: Xenia'25 Tug of War R1: starts at 4 pm
+            </div>
+		</div>
+		</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar .logo h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            flex-grow: 1;
+        }
+
+        .sidebar ul li {
+            margin: 15px 0;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #575757;
+        }
+
+        /* Main Content Styles */
+        .container {
+            margin-left: 270px;
+            padding: 20px;
+            width: calc(100% - 270px);
+        }
+
+        .profile-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+
+        .name-enrollment {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .name {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .enrollment-number {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .profile-details ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .profile-details li {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .edit-profile {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .edit-profile button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .edit-profile button:hover {
+            background-color: #575757;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <h2>HOME</h2>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a href="/home" class="nav-link">Home Page</a></li>
+            <li class="nav-item"><a href="/myprofile" class="nav-link">Profile</a></li>           
+            <li class="nav-item"><a href="/notification" class="nav-link">Notifications</a></li>
+            <li class="nav-item"><a href="/myclub" class="nav-link">My Clubs</a></li>
+            <li class="nav-item"><a href="/logout" class="nav-link">Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="edit-profile">
+            <form action="/editprofile"><button>Edit Profile</button></form>
+        </div>
+
+        <div class="profile-card">
+            <div class="profile-header">
+                <img class="profile-pic" src="https://imgs.search.brave.com/qzrekBHgwfrMbWI1ZabN-KTDYr56D2YGh1Qjn6JFEK0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzcyLzMy/Lzk4LzcyMzI5ODIz/MzYwZTU2MjY5ODk3/ODEzYTNkYmQ5OWI2/LmpwZw">
+                <div class="name-enrollment">
+                    <h2 class="name"><%= user.name %></h2>
+                </div>
+            </div>
+
+            <div class="profile-details">
+                <ul>
+                    <ul>
+                        <li><strong>Address:</strong> <%= user.address %></li>
+                        <li><strong>Email:</strong> <%= user.email %></li>
+                        <li><strong>Division:</strong> <%= user.division %></li>
+                        <li><strong>Branch:</strong> <%= user.branch %></li>
+                        <li><strong>Phone:</strong> <%= user.phone %></li>
+                        <li><strong>Enrollment Number:</strong> <%= user.enrollment %></li>
+                    </ul>                    
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

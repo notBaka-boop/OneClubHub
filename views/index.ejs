@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OneClubHub </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRRS6Wh/Ot6MRp1Blr7B9Rb5j8Ejh4uDTE5dUbsu6" crossorigin="anonymous">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar .logo h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            flex-grow: 1;
+        }
+
+        .sidebar ul li {
+            margin: 15px 0;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #575757;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 270px;
+            padding: 20px;
+            width: calc(100% - 270px);
+        }
+
+        .header h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .cards {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            text-align: center;
+            width: 250px;
+            transition: transform 0.3s;
+        }
+
+        .card img {
+            border-radius: 10px;
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card h3 {
+            margin: 15px 0;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .signup {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .signup button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .signup button:hover {
+            background-color: #575757;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <h2>HOME</h2>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a href="/home" class="nav-link">Home Page</a></li>
+            <li class="nav-item"><a href="/myprofile" class="nav-link">Profile</a></li>           
+            <li class="nav-item"><a href="/notification" class="nav-link">Notifications</a></li>
+            <li class="nav-item"><a href="/myclub" class="nav-link">My Clubs</a></li>
+            <li class="nav-item"><a href="/logout" class="nav-link">Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="signup">
+            <form action="/signin"><button>Sign In</button></form>
+        </div>
+
+        <div class="header">
+            <h1>Welcome to OneClubHub</h1>
+        </div>
+
+        <div class="cards">
+            <div class="card">
+                <h3>PAC</h3>
+                <img src="/pac.jpg" alt="PAC">
+            </div>
+            <div class="card">
+                <h3>CSI</h3>
+                <a href="/pictcsi" target="_blank">
+                    <img src="/csi.jpg" alt="CSI">
+                </a>
+            </div>
+            <div class="card">
+                <h3>PISB</h3>
+                <img src="/ieee.jpg" alt="PISB">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="cards">
+            <div class="card">
+                <h3>Sports</h3>
+                <img src="/sports.jpg" alt="Sports">
+            </div>
+            <div class="card">
+                <h3>ACM</h3>
+                <img src="/acm.jpg" alt="ACM">
+            </div>
+            <div class="card">
+                <h3>Robotics</h3>
+                <img src="/robotics.jpg" alt="Robocon">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="cards">
+            <div class="card">
+                <h3>SIH</h3>
+                <img src="sih.jpg" alt="SIH">
+            </div>
+            <div class="card">
+                <h3>Game Development Club</h3>
+                <img src="/gamedev.jpg" alt="Game Development Club">
+            </div>
+        </div> 
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeo9lZsBfW3l4F3f6M3O9LcF7syzkp9AMyy0uVzKw5a1kIXU" crossorigin="anonymous"></script>
+</body>
+</html>
