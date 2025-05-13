@@ -16,24 +16,44 @@
 
         .navbar {
             background: rgba(33, 33, 33, 0.95);
-            border-bottom: 1px solid #404040;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding: 1rem 2rem;
+            backdrop-filter: blur(10px);
         }
 
         .navbar-brand {
-            color: #ffffff !important;
+            background: linear-gradient(45deg, #00ff88, #00b3ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             font-weight: 600;
             font-size: 1.5rem;
         }
 
         .nav-link {
             color: #b3b3b3 !important;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
             margin: 0 10px;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(45deg, #00ff88, #00b3ff);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
         }
 
         .nav-link:hover {
             color: #ffffff !important;
+            transform: translateY(-2px);
         }
 
         .hero-section {
@@ -67,10 +87,10 @@
             font-size: 4rem;
             font-weight: 700;
             margin-bottom: 1.5rem;
-            background: linear-gradient(45deg, #ffffff, #b3b3b3);
+            background: linear-gradient(45deg, #00ff88, #00b3ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: titleGlow 3s ease-in-out infinite;
         }
 
         .hero-subtitle {
@@ -81,24 +101,38 @@
         }
 
         .btn-primary {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(45deg, #00ff88, #00b3ff);
+            border: none;
             padding: 15px 40px;
-            border-radius: 10px;
+            border-radius: 50px;
             font-weight: 600;
+            font-size: 1.1rem;
             transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
         }
 
         .btn-primary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
+            background: linear-gradient(45deg, #00b3ff, #00ff88);
         }
 
         .features-section {
             padding: 80px 0;
             background: rgba(33, 33, 33, 0.95);
+            position: relative;
+        }
+
+        .features-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
         }
 
         .feature-card {
@@ -106,19 +140,20 @@
             border-radius: 15px;
             padding: 30px;
             margin-bottom: 30px;
-            border: 1px solid #404040;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
 
         .feature-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            border-color: #666666;
+            border-color: #00ff88;
         }
 
         .feature-icon {
             font-size: 2.5rem;
-            color: #808080;
+            color: #00ff88;
             margin-bottom: 20px;
         }
 
@@ -126,7 +161,9 @@
             font-size: 1.5rem;
             font-weight: 600;
             margin-bottom: 15px;
-            color: #ffffff;
+            background: linear-gradient(45deg, #00ff88, #00b3ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .feature-description {
@@ -137,6 +174,7 @@
         .clubs-section {
             padding: 80px 0;
             background: rgba(26, 26, 26, 0.95);
+            position: relative;
         }
 
         .club-card {
@@ -144,21 +182,24 @@
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 30px;
-            border: 1px solid #404040;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
 
         .club-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            border-color: #666666;
+            border-color: #00ff88;
         }
 
         .club-title {
             font-size: 1.3rem;
             font-weight: 600;
             margin-bottom: 15px;
-            color: #ffffff;
+            background: linear-gradient(45deg, #00ff88, #00b3ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .club-description {
@@ -169,7 +210,7 @@
         .footer {
             background: rgba(33, 33, 33, 0.95);
             padding: 40px 0;
-            border-top: 1px solid #404040;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .footer-text {
@@ -180,11 +221,42 @@
             color: #808080;
             margin: 0 10px;
             font-size: 1.2rem;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .social-links a:hover {
-            color: #ffffff;
+            color: #00ff88;
+            transform: translateY(-3px);
+        }
+
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
+            50% { text-shadow: 0 0 20px rgba(0, 179, 255, 0.5); }
+            100% { text-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            text-align: center;
+            background: linear-gradient(45deg, #00ff88, #00b3ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(45deg, #00ff88, #00b3ff);
+            border-radius: 3px;
         }
     </style>
 </head>
@@ -200,9 +272,6 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="/home">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/myclub">My Club</a>
                     </li>
                     <% if (typeof user !== 'undefined' && user) { %>
                         <li class="nav-item">
@@ -223,12 +292,14 @@
         <div class="hero-content">
             <h1 class="hero-title">Welcome to OnClubHub</h1>
             <p class="hero-subtitle">Your one-stop platform for managing and joining college clubs</p>
+            <a href="/clubs" class="btn btn-primary">Explore Clubs</a>
         </div>
     </section>
 
     <!-- Features Section -->
     <section class="features-section">
         <div class="container">
+            <h2 class="section-title">Why Choose OnClubHub?</h2>
             <div class="row">
                 <div class="col-md-4">
                     <div class="feature-card">
@@ -246,32 +317,39 @@
                 </div>
                 <div class="col-md-4">
                     <div class="feature-card">
-                        <i class="fas fa-chart-line feature-icon"></i>
-                        <h3 class="feature-title">Analytics</h3>
-                        <p class="feature-description">Get insights into club performance and member engagement.</p>
+                        <i class="fas fa-comments feature-icon"></i>
+                        <h3 class="feature-title">Community Chat</h3>
+                        <p class="feature-description">Connect with club members and stay updated with real-time communication.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Clubs Section -->
+    <!-- Popular Clubs Section -->
     <section class="clubs-section">
         <div class="container">
-            <h2 class="text-center mb-5">Featured Clubs</h2>
+            <h2 class="section-title">Popular Clubs</h2>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="club-card">
                         <h3 class="club-title">PICT CSI</h3>
                         <p class="club-description">Computer Society of India - PICT Student Chapter</p>
-                        <a href="/pictcsi" class="btn btn-primary">Learn More</a>
+                        <a href="/csi" class="btn btn-primary">Learn More</a>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="club-card">
                         <h3 class="club-title">PICT ACM</h3>
-                        <p class="club-description">Association for Computing Machinery - PICT Student Chapter</p>
+                        <p class="club-description">Association for Computing Machinery - PICT Chapter</p>
                         <a href="/acm" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="club-card">
+                        <h3 class="club-title">PICT IEEE</h3>
+                        <p class="club-description">Institute of Electrical and Electronics Engineers</p>
+                        <a href="/ieee" class="btn btn-primary">Learn More</a>
                     </div>
                 </div>
             </div>

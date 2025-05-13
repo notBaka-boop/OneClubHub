@@ -10,45 +10,46 @@
         body {
             background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+        }
+
+        .signin-container {
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
         }
 
-        .login-container {
+        .signin-card {
             background: rgba(33, 33, 33, 0.95);
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
             width: 100%;
             max-width: 400px;
-            padding: 0;
-            border: 1px solid #404040;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
         }
 
-        .login-header {
-            background: #2d2d2d;
-            padding: 30px;
+        .signin-header {
             text-align: center;
-            color: #ffffff;
-            border-bottom: 1px solid #404040;
+            margin-bottom: 30px;
         }
 
-        .login-header h1 {
-            margin: 0;
-            font-size: 24px;
+        .signin-header h1 {
+            font-size: 2rem;
             font-weight: 600;
-            color: #ffffff;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #00ff88, #00b3ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .login-header p {
+        .signin-header p {
             color: #b3b3b3;
-            margin-top: 10px;
-        }
-
-        .login-form {
-            padding: 30px;
+            font-size: 1rem;
         }
 
         .form-group {
@@ -57,190 +58,110 @@
         }
 
         .form-control {
-            height: 50px;
-            padding-left: 45px;
+            background: rgba(45, 45, 45, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 10px;
-            border: 1px solid #404040;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background-color: #2d2d2d;
+            padding: 12px 20px;
             color: #ffffff;
-        }
-
-        .form-control::placeholder {
-            color: #808080;
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
 
         .form-control:focus {
-            border-color: #666666;
-            box-shadow: 0 0 0 0.2rem rgba(102, 102, 102, 0.25);
-            background-color: #333333;
+            background: rgba(45, 45, 45, 0.7);
+            border-color: #00ff88;
+            box-shadow: 0 0 0 0.2rem rgba(0, 255, 136, 0.25);
             color: #ffffff;
         }
 
-        .form-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #808080;
+        .form-label {
+            color: #b3b3b3;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
         }
 
-        .btn-login {
-            background: #404040;
-            color: #ffffff;
-            height: 50px;
+        .btn-signin {
+            background: linear-gradient(45deg, #00ff88, #00b3ff);
+            border: none;
             border-radius: 10px;
-            font-size: 16px;
+            padding: 12px 30px;
+            color: #ffffff;
             font-weight: 600;
+            font-size: 1rem;
+            width: 100%;
+            transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: all 0.3s ease;
-            border: none;
         }
 
-        .btn-login:hover {
-            background: #4d4d4d;
+        .btn-signin:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            color: #ffffff;
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
+            background: linear-gradient(45deg, #00b3ff, #00ff88);
         }
 
-        .forgot-password {
+        .signup-link {
             text-align: center;
             margin-top: 20px;
+            color: #b3b3b3;
         }
 
-        .forgot-password a {
-            color: #808080;
+        .signup-link a {
+            color: #00ff88;
             text-decoration: none;
-            font-size: 14px;
+            font-weight: 600;
             transition: color 0.3s ease;
         }
 
-        .forgot-password a:hover {
-            color: #ffffff;
-            text-decoration: none;
+        .signup-link a:hover {
+            color: #00b3ff;
         }
 
-        .error-message {
-            color: #ff4444;
-            font-size: 14px;
-            margin-top: 5px;
-            display: none;
+        .alert {
             background: rgba(255, 68, 68, 0.1);
-            padding: 10px;
-            border-radius: 5px;
             border: 1px solid rgba(255, 68, 68, 0.2);
-        }
-
-        .input-group-text {
-            background: transparent;
-            border: none;
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #808080;
-        }
-
-        .password-toggle {
-            background: none;
-            border: none;
-            color: #808080;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .password-toggle:hover {
-            color: #ffffff;
-        }
-
-        /* Add a subtle glow effect to the container */
-        .login-container::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, #404040, #2d2d2d, #404040);
-            z-index: -1;
-            border-radius: 22px;
-            animation: glowing 3s ease-in-out infinite;
-        }
-
-        @keyframes glowing {
-            0% { opacity: 0.5; }
-            50% { opacity: 0.8; }
-            100% { opacity: 0.5; }
+            color: #ff4444;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <%- include('./partials/header') %>
-
-    <!-- Sign In Section -->
-    <section class="section" style="min-height: calc(100vh - 80px); display: flex; align-items: center;">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="card glass-effect">
-                        <div class="card-body p-5">
-                            <h2 class="text-gradient text-center mb-4">Sign In</h2>
-                            <% if (typeof error !== 'undefined' && error) { %>
-                                <div class="alert alert-danger" role="alert">
-                                    <%= error %>
-                                </div>
-                            <% } %>
-                            <form action="/signin" method="POST">
-                                <div class="mb-4">
-                                    <label for="email" class="form-label">Email address</label>
-                                    <input type="email" class="form-control" id="email" name="email" required>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="password" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="password" name="password" required>
-                                </div>
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary">Sign In</button>
-                                </div>
-                            </form>
-                            <div class="text-center mt-4">
-                                <p class="text-secondary">Don't have an account? <a href="/signup" class="text-gradient">Sign Up</a></p>
-                            </div>
-                        </div>
-                    </div>
+    <div class="signin-container">
+        <div class="signin-card">
+            <div class="signin-header">
+                <h1>Welcome Back</h1>
+                <p>Sign in to access your account</p>
+            </div>
+            
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert" role="alert">
+                    <%= error %>
                 </div>
+            <% } %>
+
+            <form action="/signin" method="POST">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn-signin">Sign In</button>
+            </form>
+
+            <div class="signup-link">
+                <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+                <p class="mt-2" style="font-size: 0.9rem; color: #666;">
+                    Admin Login: admin@gmail.com / admin123
+                </p>
             </div>
         </div>
-    </section>
-
-    <%- include('./partials/footer') %>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const passwordToggle = document.querySelector('.password-toggle');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                passwordToggle.classList.remove('fa-eye');
-                passwordToggle.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                passwordToggle.classList.remove('fa-eye-slash');
-                passwordToggle.classList.add('fa-eye');
-            }
-        }
-
-        // Show error message if login fails
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('error') === 'true') {
-            document.getElementById('error-message').style.display = 'block';
-        }
-    </script>
 </body>
 </html>

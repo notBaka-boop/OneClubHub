@@ -230,25 +230,40 @@ app.get('/signin', (req, res) => {
 });
 
 app.post('/signin', async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     
-    if (username === 'admin' && password === 'admin123') {
+    // Check for admin credentials
+    if (email === 'admin@gmail.com' && password === 'admin123') {
         req.session.isAdmin = true;
         req.session.user = {
             name: 'Admin User',
-            email: 'admin@example.com',
+            email: 'admin@gmail.com',
             isAdmin: true
         };
-        res.redirect('/admin/dashboard');
-    } else {
-        // For regular users, you would typically check against your database
-        // This is just a mock example
+        return res.redirect('/admin/dashboard');
+    }
+    
+    try {
+        // Regular user authentication logic
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.render('signin', { error: 'Invalid email or password' });
+        }
+
+        // In a real application, you would verify the password hash here
+        if (password !== user.password) { // Replace with proper password verification
+            return res.render('signin', { error: 'Invalid email or password' });
+        }
+
         req.session.user = {
-            name: 'Regular User',
-            email: username,
+            name: user.name,
+            email: user.email,
             isAdmin: false
         };
-    res.redirect('/home');
+        res.redirect('/clubs');
+    } catch (error) {
+        console.error('Sign in error:', error);
+        res.render('signin', { error: 'An error occurred during sign in' });
     }
 });
 

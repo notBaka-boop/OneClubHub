@@ -16,22 +16,25 @@
 
         .sidebar {
             background: rgba(33, 33, 33, 0.95);
-            border-right: 1px solid #404040;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
             height: 100vh;
             position: fixed;
             width: 250px;
             padding: 20px;
+            backdrop-filter: blur(10px);
         }
 
         .sidebar .logo {
             text-align: center;
             padding: 20px 0;
-            border-bottom: 1px solid #404040;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 20px;
         }
 
         .sidebar .logo h2 {
-            color: #ffffff;
+            background: linear-gradient(45deg, #00ff88, #00b3ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             font-weight: 600;
             margin: 0;
         }
@@ -47,6 +50,7 @@
         .nav-link:hover {
             color: #ffffff;
             background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
         }
 
         .nav-link i {
@@ -65,14 +69,17 @@
             border-radius: 15px;
             padding: 30px;
             margin-bottom: 30px;
-            border: 1px solid #404040;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         .welcome-title {
             font-size: 2rem;
             font-weight: 600;
             margin-bottom: 15px;
-            color: #ffffff;
+            background: linear-gradient(45deg, #00ff88, #00b3ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .welcome-text {
@@ -85,19 +92,20 @@
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 20px;
-            border: 1px solid #404040;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
 
         .stats-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            border-color: #666666;
+            border-color: #00ff88;
         }
 
         .stats-icon {
             font-size: 2rem;
-            color: #808080;
+            color: #00ff88;
             margin-bottom: 15px;
         }
 
@@ -117,19 +125,22 @@
             background: rgba(45, 45, 45, 0.5);
             border-radius: 15px;
             padding: 25px;
-            border: 1px solid #404040;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         .activity-title {
             font-size: 1.5rem;
             font-weight: 600;
             margin-bottom: 20px;
-            color: #ffffff;
+            background: linear-gradient(45deg, #00ff88, #00b3ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .activity-item {
             padding: 15px 0;
-            border-bottom: 1px solid #404040;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .activity-item:last-child {
@@ -144,6 +155,17 @@
         .activity-time {
             color: #808080;
             font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main-content {
+                margin-left: 0;
+            }
         }
     </style>
 </head>
@@ -166,6 +188,9 @@
             <a class="nav-link" href="/myclub">
                 <i class="fas fa-users"></i> My Clubs
             </a>
+            <a class="nav-link" href="/chat">
+                <i class="fas fa-comments"></i> Chat
+            </a>
             <a class="nav-link" href="/logout">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
@@ -177,11 +202,9 @@
         <!-- Welcome Section -->
         <section class="section">
             <div class="container">
-                <div class="card glass-effect">
-                    <div class="card-body">
-                        <h1 class="text-gradient mb-4">Welcome back, <%= user.name %>!</h1>
-                        <p class="lead text-secondary">Here's what's happening with your clubs today.</p>
-                    </div>
+                <div class="welcome-section">
+                    <h1 class="welcome-title">Welcome back, <%= user.name %>!</h1>
+                    <p class="welcome-text">Here's what's happening with your clubs today.</p>
                 </div>
             </div>
         </section>
