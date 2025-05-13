@@ -3,145 +3,463 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat System</title>
-    <link rel="stylesheet" href="/styles.css">
+    <title>Chat - OnClubHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
-            display: flex;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             min-height: 100vh;
-            margin: 0;
-            background-color: #f4f4f4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
         }
-        .main-content {
-            display: flex;
-            width: 100%;
+
+        .navbar {
+            background: rgba(33, 33, 33, 0.95);
+            border-bottom: 1px solid #404040;
+            padding: 1rem 2rem;
         }
+
+        .navbar-brand {
+            color: #ffffff !important;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .nav-link {
+            color: #b3b3b3 !important;
+            transition: color 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .nav-link:hover {
+            color: #ffffff !important;
+        }
+
         .chat-container {
             display: flex;
-            flex-grow: 1;
-            padding: 20px;
-        }
-        .contacts {
-            width: 30%;
-            background: #333;
-            color: white;
+            height: calc(100vh - 72px);
+            background: rgba(33, 33, 33, 0.95);
+            border: 1px solid #404040;
             border-radius: 10px;
-            padding: 15px;
-            overflow-y: auto;
+            margin: 20px;
+            overflow: hidden;
         }
-        .contacts h3 {
-            margin-bottom: 15px;
-        }
-        .contacts ul {
-            list-style: none;
-            padding: 0;
-        }
-        .contacts li {
-            padding: 10px;
-            border-bottom: 1px solid #444;
-            cursor: pointer;
-        }
-        .contacts li:hover {
-            background: #444;
-        }
-        .chat-area {
-            width: 70%;
-            background: #fff;
-            border-radius: 10px;
-            padding: 15px;
+
+        .chat-sidebar {
+            width: 300px;
+            background: rgba(45, 45, 45, 0.5);
+            border-right: 1px solid #404040;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
         }
-        .chat-box {
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #404040;
+        }
+
+        .search-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #404040;
+            border-radius: 20px;
+            padding: 8px 15px;
+            color: #ffffff;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #666666;
+        }
+
+        .chat-list {
+            flex: 1;
             overflow-y: auto;
-            max-height: 400px;
         }
+
+        .chat-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #404040;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .chat-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .chat-item.active {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .chat-name {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .chat-time {
+            color: #808080;
+            font-size: 0.8rem;
+        }
+
+        .chat-preview {
+            color: #b3b3b3;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid #404040;
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .chat-title {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
         .message {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            position: relative;
         }
+
         .message.sent {
-            background: #333;
-            color: white;
+            background: #404040;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.received {
+            background: rgba(255, 255, 255, 0.1);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: #808080;
+            margin-top: 5px;
             text-align: right;
         }
-        .message.received {
-            background: #575757;
-            color: white;
-            text-align: left;
-        }
-        .input-area {
-            margin-top: 10px;
+
+        .chat-input {
+            padding: 20px;
+            border-top: 1px solid #404040;
             display: flex;
             gap: 10px;
         }
-        .input-area input {
-            flex-grow: 1;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-        .input-area button {
+
+        .message-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #404040;
+            border-radius: 20px;
             padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #333;
-            color: white;
-            cursor: pointer;
+            color: #ffffff;
         }
-        .input-area button:hover {
-            background-color: #575757;
+
+        .message-input:focus {
+            outline: none;
+            border-color: #666666;
+        }
+
+        .send-button {
+            background: #404040;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .send-button:hover {
+            background: #4d4d4d;
+            transform: scale(1.05);
+        }
+
+        .community-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            margin-left: 5px;
         }
     </style>
 </head>
 <body>
-    <%- include('partials/sidebar') %>
-
-    <div class="main-content">
-        <div class="chat-container">
-            <div class="contacts">
-                <h3>Contacts</h3>
-                <ul>
-                    <li>President</li>
-                    <li>Vice-President</li>
-                    <li>FE Head</li>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">OnClubHub</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/myprofile">My Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/chat">
+                            <i class="fas fa-comments"></i> Chat
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Sign Out</a>
+                    </li>
                 </ul>
             </div>
-            <div class="chat-area">
-                <div class="chat-box" id="chat-box">
-                    <!-- Messages will appear here -->
+        </div>
+    </nav>
+
+    <!-- Chat Container -->
+    <div class="chat-container">
+        <!-- Sidebar -->
+        <div class="chat-sidebar">
+            <div class="sidebar-header">
+                <h5>Messages</h5>
+                <input type="text" class="search-box" placeholder="Search chats...">
+            </div>
+            <div class="chat-list">
+                <!-- Community Rooms -->
+                <div class="chat-item active">
+                    <div class="chat-item-header">
+                        <span class="chat-name">PICT CSI Community <span class="community-badge">Community</span></span>
+                        <span class="chat-time">12:30 PM</span>
+                    </div>
+                    <div class="chat-preview">Welcome to the CSI community chat!</div>
                 </div>
-                <div class="input-area">
-                    <input type="text" id="message-input" placeholder="Type a message...">
-                    <button id="send-btn">Send</button>
+                <div class="chat-item">
+                    <div class="chat-item-header">
+                        <span class="chat-name">PICT ACM Community <span class="community-badge">Community</span></span>
+                        <span class="chat-time">11:45 AM</span>
+                    </div>
+                    <div class="chat-preview">Next workshop on AI and Machine Learning</div>
                 </div>
+
+                <!-- Individual Chats -->
+                <div class="chat-item">
+                    <div class="chat-item-header">
+                        <span class="chat-name">Rahul Sharma (CSI President)</span>
+                        <span class="chat-time">10:20 AM</span>
+                    </div>
+                    <div class="chat-preview">About the upcoming hackathon...</div>
+                </div>
+                <div class="chat-item">
+                    <div class="chat-item-header">
+                        <span class="chat-name">Priya Patel (ACM Vice President)</span>
+                        <span class="chat-time">Yesterday</span>
+                    </div>
+                    <div class="chat-preview">Thanks for your interest in the workshop!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="chat-main">
+            <div class="chat-header">
+                <div class="chat-avatar">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="chat-title">PICT CSI Community</div>
+            </div>
+            <div class="chat-messages">
+                <div class="message received">
+                    Welcome to the CSI community chat! Feel free to discuss and share ideas.
+                    <div class="message-time">12:30 PM</div>
+                </div>
+                <div class="message sent">
+                    Hi everyone! Excited to be part of this community.
+                    <div class="message-time">12:32 PM</div>
+                </div>
+                <div class="message received">
+                    Don't forget about the upcoming hackathon registration!
+                    <div class="message-time">12:35 PM</div>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" class="message-input" placeholder="Type a message...">
+                <button class="send-button">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        var socket = io();
-        var chatBox = document.getElementById("chat-box");
-        var input = document.getElementById("message-input");
-        var sendBtn = document.getElementById("send-btn");
+        // Initialize Socket.IO
+        const socket = io();
+        const messageInput = document.querySelector('.message-input');
+        const sendButton = document.querySelector('.send-button');
+        const chatMessages = document.querySelector('.chat-messages');
+        let currentRoom = 'csi-community'; // Default room
 
-        sendBtn.addEventListener("click", function() {
-            var message = input.value;
-            if (message.trim() !== "") {
-                socket.emit("chat message", message);
-                input.value = "";
+        // Join default room
+        socket.emit('joinRoom', currentRoom);
+
+        // Load chat history
+        async function loadChatHistory(room) {
+            try {
+                const response = await fetch(`/api/messages/${room}`);
+                const messages = await response.json();
+                
+                // Clear existing messages
+                chatMessages.innerHTML = '';
+                
+                // Add messages to chat
+                messages.forEach(msg => {
+                    const isSent = msg.sender === '<%= user._id %>';
+                    const messageHTML = `
+                        <div class="message ${isSent ? 'sent' : 'received'}">
+                            ${msg.content}
+                            <div class="message-time">${new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                        </div>
+                    `;
+                    chatMessages.insertAdjacentHTML('beforeend', messageHTML);
+                });
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } catch (error) {
+                console.error('Error loading chat history:', error);
+            }
+        }
+
+        // Send message
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message) {
+                // Create message data
+                const messageData = {
+                    message: message,
+                    room: currentRoom,
+                    sender: '<%= user._id %>'
+                };
+
+                // Emit the message
+                socket.emit('chatMessage', messageData);
+
+                // Clear input
+                messageInput.value = '';
+
+                // Add message to UI immediately
+                const messageHTML = `
+                    <div class="message sent">
+                        ${message}
+                        <div class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                    </div>
+                `;
+                chatMessages.insertAdjacentHTML('beforeend', messageHTML);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        // Handle received messages
+        socket.on('message', (data) => {
+            const isSent = data.sender === '<%= user._id %>';
+            const messageHTML = `
+                <div class="message ${isSent ? 'sent' : 'received'}">
+                    ${data.content}
+                    <div class="message-time">${new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                </div>
+            `;
+            chatMessages.insertAdjacentHTML('beforeend', messageHTML);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+
+        // Event listeners
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
             }
         });
 
-        socket.on("chat message", function(msg) {
-            var messageElement = document.createElement("div");
-            messageElement.classList.add("message", "received");
-            messageElement.innerText = msg;
-            chatBox.appendChild(messageElement);
-            chatBox.scrollTop = chatBox.scrollHeight;
+        // Chat switching
+        const chatItems = document.querySelectorAll('.chat-item');
+        chatItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // Remove active class from all items
+                chatItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+
+                // Update current room and chat title
+                const roomName = item.querySelector('.chat-name').textContent.trim();
+                currentRoom = roomName.toLowerCase().replace(/\s+/g, '-');
+                document.querySelector('.chat-title').textContent = roomName;
+
+                // Leave current room and join new room
+                socket.emit('joinRoom', currentRoom);
+
+                // Load chat history for new room
+                loadChatHistory(currentRoom);
+            });
+        });
+
+        // Load initial chat history
+        loadChatHistory(currentRoom);
+
+        // Debug connection
+        socket.on('connect', () => {
+            console.log('Connected to Socket.IO server');
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Disconnected from Socket.IO server');
+        });
+
+        socket.on('error', (error) => {
+            console.error('Socket.IO error:', error);
         });
     </script>
 </body>

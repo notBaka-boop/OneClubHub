@@ -3,201 +3,300 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OneClubHub </title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRRS6Wh/Ot6MRp1Blr7B9Rb5j8Ejh4uDTE5dUbsu6" crossorigin="anonymous">
-
+    <title>OnClubHub - College Club Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            display: flex;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
         }
 
-        /* Sidebar Styles */
-        .sidebar {
-            width: 250px;
-            background-color: #333;
-            color: white;
-            padding: 20px;
-            position: fixed;
+        .navbar {
+            background: rgba(33, 33, 33, 0.95);
+            border-bottom: 1px solid #404040;
+            padding: 1rem 2rem;
+        }
+
+        .navbar-brand {
+            color: #ffffff !important;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .nav-link {
+            color: #b3b3b3 !important;
+            transition: color 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .nav-link:hover {
+            color: #ffffff !important;
+        }
+
+        .hero-section {
+            padding: 150px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background: url('/images/pict.jpg') center/cover no-repeat;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
             top: 0;
             left: 0;
-            height: 100vh;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(45, 45, 45, 0.8));
+            z-index: 1;
         }
 
-        .sidebar .logo h2 {
-            color: white;
-            text-align: center;
-            margin-bottom: 30px;
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
-        .sidebar ul {
-            list-style-type: none;
-            padding: 0;
-            flex-grow: 1;
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #ffffff, #b3b3b3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .sidebar ul li {
-            margin: 15px 0;
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: #ffffff;
+            margin-bottom: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        .sidebar ul li a {
-            color: white;
-            text-decoration: none;
-            display: block;
-            padding: 10px;
-            border-radius: 4px;
-            text-align: center;
-        }
-
-        .sidebar ul li a:hover {
-            background-color: #575757;
-        }
-
-        /* Main Content Styles */
-        .main-content {
-            margin-left: 270px;
-            padding: 20px;
-            width: calc(100% - 270px);
-        }
-
-        .header h1 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .cards {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .card {
-            background-color: white;
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 15px 40px;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 15px;
-            text-align: center;
-            width: 250px;
-            transition: transform 0.3s;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
         }
 
-        .card img {
-            border-radius: 10px;
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
-        .card h3 {
-            margin: 15px 0;
+        .features-section {
+            padding: 80px 0;
+            background: rgba(33, 33, 33, 0.95);
         }
 
-        .card:hover {
-            transform: scale(1.05);
+        .feature-card {
+            background: rgba(45, 45, 45, 0.5);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #404040;
+            transition: all 0.3s ease;
         }
 
-        .signup {
-            text-align: right;
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: #666666;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #808080;
             margin-bottom: 20px;
         }
 
-        .signup button {
-            background-color: #333;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #ffffff;
         }
 
-        .signup button:hover {
-            background-color: #575757;
+        .feature-description {
+            color: #b3b3b3;
+            line-height: 1.6;
+        }
+
+        .clubs-section {
+            padding: 80px 0;
+            background: rgba(26, 26, 26, 0.95);
+        }
+
+        .club-card {
+            background: rgba(45, 45, 45, 0.5);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #404040;
+            transition: all 0.3s ease;
+        }
+
+        .club-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: #666666;
+        }
+
+        .club-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .club-description {
+            color: #b3b3b3;
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            background: rgba(33, 33, 33, 0.95);
+            padding: 40px 0;
+            border-top: 1px solid #404040;
+        }
+
+        .footer-text {
+            color: #808080;
+        }
+
+        .social-links a {
+            color: #808080;
+            margin: 0 10px;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #ffffff;
         }
     </style>
 </head>
 <body>
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="logo">
-            <h2>HOME</h2>
-        </div>
-        <ul class="nav flex-column">
-            <li class="nav-item"><a href="/home" class="nav-link">Home Page</a></li>
-            <li class="nav-item"><a href="/myprofile" class="nav-link">Profile</a></li>           
-            <li class="nav-item"><a href="/notification" class="nav-link">Notifications</a></li>
-            <li class="nav-item"><a href="/myclub" class="nav-link">My Clubs</a></li>
-            <li class="nav-item"><a href="/logout" class="nav-link">Logout</a></li>
-        </ul>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="signup">
-            <form action="/signin"><button>Sign In</button></form>
-        </div>
-
-        <div class="header">
-            <h1>Welcome to OneClubHub</h1>
-        </div>
-
-        <div class="cards">
-            <div class="card">
-                <h3>PAC</h3>
-                <img src="/pac.jpg" alt="PAC">
-            </div>
-            <div class="card">
-                <h3>CSI</h3>
-                <a href="/pictcsi" target="_blank">
-                    <img src="/csi.jpg" alt="CSI">
-                </a>
-            </div>
-            <div class="card">
-                <h3>PISB</h3>
-                <img src="/ieee.jpg" alt="PISB">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">OnClubHub</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/myclub">My Club</a>
+                    </li>
+                    <% if (typeof user !== 'undefined' && user) { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">Sign Out</a>
+                        </li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/signin">Sign In</a>
+                        </li>
+                    <% } %>
+                </ul>
             </div>
         </div>
+    </nav>
 
-        <br>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Welcome to OnClubHub</h1>
+            <p class="hero-subtitle">Your one-stop platform for managing and joining college clubs</p>
+        </div>
+    </section>
 
-        <div class="cards">
-            <div class="card">
-                <h3>Sports</h3>
-                <img src="/sports.jpg" alt="Sports">
-            </div>
-            <div class="card">
-                <h3>ACM</h3>
-                <img src="/acm.jpg" alt="ACM">
-            </div>
-            <div class="card">
-                <h3>Robotics</h3>
-                <img src="/robotics.jpg" alt="Robocon">
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <i class="fas fa-users feature-icon"></i>
+                        <h3 class="feature-title">Club Management</h3>
+                        <p class="feature-description">Easily manage your college clubs, members, and activities all in one place.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <i class="fas fa-calendar-alt feature-icon"></i>
+                        <h3 class="feature-title">Event Planning</h3>
+                        <p class="feature-description">Organize and track club events, workshops, and competitions efficiently.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <i class="fas fa-chart-line feature-icon"></i>
+                        <h3 class="feature-title">Analytics</h3>
+                        <p class="feature-description">Get insights into club performance and member engagement.</p>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <br>
-
-        <div class="cards">
-            <div class="card">
-                <h3>SIH</h3>
-                <img src="sih.jpg" alt="SIH">
+    <!-- Clubs Section -->
+    <section class="clubs-section">
+        <div class="container">
+            <h2 class="text-center mb-5">Featured Clubs</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="club-card">
+                        <h3 class="club-title">PICT CSI</h3>
+                        <p class="club-description">Computer Society of India - PICT Student Chapter</p>
+                        <a href="/pictcsi" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="club-card">
+                        <h3 class="club-title">PICT ACM</h3>
+                        <p class="club-description">Association for Computing Machinery - PICT Student Chapter</p>
+                        <a href="/acm" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
             </div>
-            <div class="card">
-                <h3>Game Development Club</h3>
-                <img src="/gamedev.jpg" alt="Game Development Club">
-            </div>
-        </div> 
-    </div>
+        </div>
+    </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeo9lZsBfW3l4F3f6M3O9LcF7syzkp9AMyy0uVzKw5a1kIXU" crossorigin="anonymous"></script>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="footer-text mb-0">© 2024 OnClubHub. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

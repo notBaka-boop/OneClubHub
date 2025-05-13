@@ -3,169 +3,296 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>My Clubs - OnClubHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+        }
 
-    <style>        
-        /* General reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        .sidebar {
+            background: rgba(33, 33, 33, 0.95);
+            border-right: 1px solid #404040;
+            height: 100vh;
+            position: fixed;
+            width: 250px;
+            padding: 20px;
+        }
 
-/* Body and layout */
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    height: 100vh;
-    background-color: #f4f4f4;
-}
+        .sidebar .logo {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #404040;
+            margin-bottom: 20px;
+        }
 
-.sidebar {
-    height: 100%;
-    width: 250px;
-    background-color: #333;
-    color: white;
-    padding: 20px;
-}
+        .sidebar .logo h2 {
+            color: #ffffff;
+            font-weight: 600;
+            margin: 0;
+        }
 
-.sidebar .logo {
-    margin-bottom: 30px;
-}
+        .nav-link {
+            color: #b3b3b3;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+        }
 
-.sidebar .logo h2 {
-    color: #fff;
-    text-align: center;
-}
+        .nav-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+        }
 
-.sidebar .nav {
-    list-style-type: none;
-}
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
 
-.sidebar .nav li {
-    margin: 15px 0;
-}
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+        }
 
-.sidebar .nav li a {
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
-    display: block;
-    padding: 10px;
-    border-radius: 4px;
-}
+        .page-header {
+            background: rgba(45, 45, 45, 0.5);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #404040;
+        }
 
-.sidebar .nav li a:hover {
-    background-color: #444;
-}
+        .page-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
 
-.main-content {
-    flex-grow: 1;
-    background-color: white;
-    padding: 30px;
-    margin-left: 250px;
-}
+        .page-description {
+            color: #b3b3b3;
+            font-size: 1.1rem;
+        }
 
-.header h1 {
-    text-align: center;
-    margin-bottom: 40px;
-}
+        .club-card {
+            background: rgba(45, 45, 45, 0.5);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #404040;
+            transition: all 0.3s ease;
+        }
 
-.cards {
-    display: flex;
-    gap: 20px;
-    justify-content: space-between;
-}
+        .club-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: #666666;
+        }
 
-.card {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 20px;
-    width: 30%;
-    text-align: center;
-}
+        .club-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-.card h3 {
-    margin-bottom: 10px;
-}
+        .club-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+        }
 
-.card:hover {
-	transform: scale(1.05) translateY(-10px);
-	box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
-}
+        .club-icon i {
+            font-size: 1.8rem;
+            color: #808080;
+        }
 
- .card-container {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-	gap: 30px;
-	padding: 30px;
-}
+        .club-info h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+            color: #ffffff;
+        }
 
-.card {
-	transition: transform 0.3s ease, box-shadow 0.3s ease;
-	border: none;
-	border-radius: 15px;
-	overflow: hidden;
-    text-decoration: none;
-}
+        .club-info p {
+            color: #b3b3b3;
+            margin: 5px 0 0;
+        }
 
-a:visited {
-    color: grey;
-}
+        .club-stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #404040;
+        }
 
-.card:hover {
-	transform: scale(1.05) translateY(-10px);
-	box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
-}
+        .stat-item {
+            text-align: center;
+        }
 
-.card-img-top {
-	height: 200px;
-	object-fit: cover;
-	border-radius: 50%;
-}
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
 
-.signup{
-    padding-left: 900px;
-}
-</style>
+        .stat-label {
+            color: #b3b3b3;
+            font-size: 0.9rem;
+        }
+
+        .club-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #404040;
+            border: none;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #4d4d4d;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #404040;
+            color: #b3b3b3;
+        }
+
+        .btn-outline:hover {
+            border-color: #666666;
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
 <body>
+    <!-- Sidebar -->
     <div class="sidebar">
         <div class="logo">
-            <h2>Dashboard</h2>
+            <h2>OnClubHub</h2>
         </div>
-        <ul class="nav">
-            <li><a href="/home">Home Page</a></li>
-			<li><a href="/myprofile">Profile</a></li>			
-            <li><a href="/notification">Notifications</a></li>
-            <li><a href="/myclub">My Clubs</a></li>
-            <li><a href="/logout">Logout</a></li>
-        </ul>
+        <nav class="nav flex-column">
+            <a class="nav-link" href="/home">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a class="nav-link" href="/myprofile">
+                <i class="fas fa-user"></i> Profile
+            </a>
+            <a class="nav-link" href="/notification">
+                <i class="fas fa-bell"></i> Notifications
+            </a>
+            <a class="nav-link active" href="/myclub">
+                <i class="fas fa-users"></i> My Clubs
+            </a>
+            <a class="nav-link" href="/logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </nav>
     </div>
 
+    <!-- Main Content -->
     <div class="main-content">
-        <div class="header">
-            <h1>My Clubs</h1>
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">My Clubs</h1>
+            <p class="page-description">Manage your club memberships and activities</p>
         </div>
-        <div class="cards">
-            <div class="card">
-                <h3>PAC</h3>
-				<a href="\pictpac"><img src="PAC.jpg" height=200 width=200> </a>
-				<p align=center>Status: 28 hrs activity </p>
+
+        <!-- Clubs Grid -->
+        <div class="row">
+            <!-- PICT CSI -->
+            <div class="col-md-6">
+                <div class="club-card">
+                    <div class="club-header">
+                        <div class="club-icon">
+                            <i class="fas fa-laptop-code"></i>
+                        </div>
+                        <div class="club-info">
+                            <h3>PICT CSI</h3>
+                            <p>Computer Society of India</p>
+                        </div>
+                    </div>
+                    <div class="club-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">150+</div>
+                            <div class="stat-label">Members</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">5</div>
+                            <div class="stat-label">Events</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">Projects</div>
+                        </div>
+                    </div>
+                    <div class="club-actions">
+                        <a href="/pictcsi" class="btn btn-primary">View Details</a>
+                        <button class="btn btn-outline">Leave Club</button>
+                    </div>
+                </div>
             </div>
-            <div class="card">
-                <h3>CSI</h3>
-				<a href="\chat"><img src="CSI.jpg" height=200 width=200> </a>
-				<p align=center>Status: Applied</p>
+
+            <!-- PICT ACM -->
+            <div class="col-md-6">
+                <div class="club-card">
+                    <div class="club-header">
+                        <div class="club-icon">
+                            <i class="fas fa-microchip"></i>
+                        </div>
+                        <div class="club-info">
+                            <h3>PICT ACM</h3>
+                            <p>Association for Computing Machinery</p>
+                        </div>
+                    </div>
+                    <div class="club-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">120+</div>
+                            <div class="stat-label">Members</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">Events</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">2</div>
+                            <div class="stat-label">Projects</div>
+                        </div>
+                    </div>
+                    <div class="club-actions">
+                        <a href="#" class="btn btn-primary">View Details</a>
+                        <button class="btn btn-outline">Leave Club</button>
+                    </div>
+                </div>
             </div>
-            <div class="card">
-                <h3>PISB</h3>
-				<a href="\pictpisb"> <img src="PISB.jpg" height=200 width=200> </a>
-				<p align=center>Status: Selected for Interview</p>
-            </div>
-		</div>
+        </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

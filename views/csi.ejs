@@ -3,194 +3,466 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PICT CSI</title>
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRRS6Wh/Ot6MRp1Blr7B9Rb5j8Ejh4uDTE5dUbsu6" crossorigin="anonymous">
-
+    <title>PICT CSI - OnClubHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            overflow-x: hidden;
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
         }
 
-        /* Sidebar Styles */
-        .sidebar {
+        .navbar {
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 2rem;
             position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(15, 15, 15, 0.98);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar-brand {
+            color: #ffffff !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-link {
+            color: #b3b3b3 !important;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00ff88, #00b3ff);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link:hover {
+            color: #ffffff !important;
+            transform: translateY(-2px);
+        }
+
+        .club-header {
+            background: linear-gradient(135deg, rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9));
+            padding: 120px 0 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .club-header::before {
+            content: '';
+            position: absolute;
             top: 0;
             left: 0;
-            width: 250px;
-            height: 100%;
-            background-color: #333;
-            padding-top: 20px;
-            color: #fff;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(0, 255, 136, 0.1), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(0, 179, 255, 0.1), transparent 40%);
+            z-index: 1;
         }
 
-        .sidebar .logo h2 {
-            color: #fff;
-            text-align: center;
+        .club-content {
+            position: relative;
+            z-index: 2;
         }
 
-        .sidebar .nav {
-            list-style: none;
-            padding: 0;
-        }
-
-        .sidebar .nav li {
-            padding: 10px;
-            text-align: center;
-        }
-
-        .sidebar .nav li a {
-            color: #ccc;
-            text-decoration: none;
-            display: block;
-            transition: background 0.3s;
-        }
-
-        .sidebar .nav li a:hover {
-            background-color: #444;
-            color: #fff;
-        }
-
-        /* Main Content Styles */
-        .main-content {
-            margin-left: 270px;
-            padding: 20px;
-        }
-
-        .banner-img {
+        .club-image {
             width: 100%;
-            height: 200px;
-            object-fit: cover;
-            margin: 20px 0;
+            max-width: 800px;
+            height: auto;
+            border-radius: 20px;
+            margin: 30px auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            display: block;
+            transform: perspective(1000px) rotateX(0deg);
+            transition: all 0.5s ease;
         }
 
-        .join-btn {
-            position: sticky;
-            top: 20px;
-            z-index: 1000;
+        .club-image:hover {
+            transform: perspective(1000px) rotateX(5deg);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
         }
 
-        .description {
-            text-align: justify;
+        .club-title {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00ff88, #00b3ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 255, 136, 0.3);
+            animation: titleGlow 2s ease-in-out infinite alternate;
         }
 
-        .members-container img {
+        @keyframes titleGlow {
+            from {
+                text-shadow: 0 2px 10px rgba(0, 255, 136, 0.3);
+            }
+            to {
+                text-shadow: 0 2px 20px rgba(0, 179, 255, 0.5);
+            }
+        }
+
+        .club-subtitle {
+            font-size: 1.4rem;
+            color: #b3b3b3;
+            margin-bottom: 2rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .section {
+            padding: 80px 0;
+            background: rgba(15, 15, 15, 0.95);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            color: #ffffff;
+            text-align: center;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
             width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            height: 3px;
+            background: linear-gradient(90deg, #00ff88, #00b3ff);
+            border-radius: 3px;
         }
 
-            .join-btn {
-        background-color: #333;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        position: sticky;
-        top: 20px;
-        z-index: 1000;
-    }
+        .card {
+            background: rgba(26, 26, 26, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
 
-    .join-btn:hover {
-        background-color: #575757;
-    }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(0, 255, 136, 0.3);
+            background: rgba(26, 26, 26, 0.7);
+        }
 
-    .banner-img {
-        width: 100%;        
-        height: auto;       
-        object-fit: cover; 
-    }
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #ffffff;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .card-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, #00ff88, #00b3ff);
+        }
+
+        .card-text {
+            color: #b3b3b3;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #00ff88, #00b3ff);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
+            background: linear-gradient(45deg, #00b3ff, #00ff88);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 50px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(26, 26, 26, 0.5);
+            border-radius: 15px;
+            min-width: 150px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            background: rgba(26, 26, 26, 0.7);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 255, 136, 0.3);
+        }
+
+        .stat-label {
+            color: #b3b3b3;
+            font-size: 1.2rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer {
+            background: rgba(15, 15, 15, 0.98);
+            padding: 60px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-text {
+            color: #808080;
+            font-size: 1.1rem;
+        }
+
+        .social-links a {
+            color: #808080;
+            margin: 0 15px;
+            font-size: 1.4rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #00ff88;
+            transform: translateY(-3px);
+        }
+
+        /* Add smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Add loading animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            animation: fadeIn 1s ease-out;
+        }
     </style>
 </head>
 <body>  
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="logo">
-            <h2>HOME</h2>
-        </div>
-        <ul class="nav">
-            <li><a href="/home">Home Page</a></li>
-            <li><a href="/myprofile">Profile</a></li>			
-            <li><a href="/notification">Notifications</a></li>
-            <li><a href="/myclub">My Clubs</a></li>
-            <li><a href="/logout">Logout</a></li>
-        </ul>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Sticky Join Now Button -->
-        <form action="/apply"><button class="btn btn-primary join-btn">Join Now</button></form>
-
-        <!-- Main Heading -->
-        <h1 class="text-center">PICT CSI Club</h1>
-
-        <!-- Banner Image -->
-            <img src="/banner.jpg" class="banner-img" alt="PICT CSI Banner">
-
-        <!-- Detailed Description -->
-        <div class="description">
-            <p>
-                The PICT CSI (Computer Society of India) Club is one of the most active and vibrant communities at PICT, 
-                dedicated to promoting knowledge in computer science and information technology. The club hosts a variety of 
-                events including workshops, coding competitions, guest lectures from industry experts, and collaborative projects 
-                aimed at fostering innovation and skill development.
-            </p>
-            <p>
-                Members get the opportunity to enhance their technical and soft skills, network with peers and professionals, 
-                and stay updated with the latest trends in technology. The club also encourages members to participate in 
-                national and international competitions, hackathons, and conferences.
-            </p>
-            <p>
-                Whether you're a beginner eager to learn the basics or an advanced programmer looking to tackle complex problems, 
-                PICT CSI provides the platform and resources to grow and succeed.
-            </p>
-        </div>
-
-        <!-- Number of Members -->
-        <h4>Members: 300+</h4>
-
-        <!-- Members Section -->
-        <div class="member-section">
-            <h3 class="members-heading">Members</h3>
-            <div class="members-container d-flex gap-3">
-                <img src="/preseident.jpg" alt="Member 1">
-                <img src="/vp.jpg" alt="Member 2">
-                <img src="/pro.jpg" alt="Member 3">
-                <img src="/sponsorship.jpg" alt="Member 4">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">OnClubHub</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/myclub">My Club</a>
+                    </li>
+                    <% if (typeof user !== 'undefined' && user) { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">Sign Out</a>
+                        </li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/signin">Sign In</a>
+                        </li>
+                    <% } %>
+                </ul>
             </div>
         </div>
+    </nav>
 
-        <!-- Events Section -->
-        <div class="events-section mt-5">
-            <h3 class="events-heading">Upcoming Events</h3>
-            <ul class="list-group">
-                <li class="list-group-item">Hackathon 2025 - March 15, 2025</li>
-                <li class="list-group-item">Workshop on AI and ML - April 5, 2025</li>
-                <li class="list-group-item">Guest Lecture: Future of Quantum Computing - May 10, 2025</li>
-            </ul>
+    <!-- Club Header -->
+    <header class="club-header">
+        <div class="container">
+            <div class="club-content">
+                <h1 class="club-title">PICT CSI</h1>
+                <p class="club-subtitle">Computer Society of India - PICT Student Chapter</p>
+                <img src="/images/csigroup.jpg" alt="PICT CSI Group" class="club-image">
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number">45+</div>
+                        <div class="stat-label">Members</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">12+</div>
+                        <div class="stat-label">Events</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">8+</div>
+                        <div class="stat-label">Projects</div>
+                    </div>
+                </div>
+            </div>
         </div>
+    </header>
 
-        <!-- Contact Section -->
-        <div class="contact-section mt-5">
-            <h3>Contact Us</h3>
-            <p>Email: pictcsi@example.com</p>
-            <p>Phone: +91-1234567890</p>
+    <!-- About Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">About CSI</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <h3 class="card-title">Our Mission</h3>
+                        <p class="card-text">
+                            The PICT CSI Student Chapter is dedicated to promoting the advancement of computer science and information technology. We aim to foster a community of tech enthusiasts who are passionate about innovation and professional development.
+            </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <h3 class="card-title">What We Do</h3>
+                        <p class="card-text">
+                            We conduct technical workshops, coding competitions, and industry interactions. Our members get opportunities to participate in national-level events, develop technical skills, and network with professionals in the field.
+            </p>
+                    </div>
+                </div>
+            </div>
         </div>
+    </section>
 
-    </div>
+    <!-- Activities Section -->
+    <section class="section" style="background: rgba(26, 26, 26, 0.95);">
+        <div class="container">
+            <h2 class="section-title">Our Activities</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <h3 class="card-title">Technical Workshops</h3>
+                        <p class="card-text">
+                            Hands-on workshops covering various domains like web development, machine learning, cybersecurity, and more to enhance practical skills.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <h3 class="card-title">Coding Competitions</h3>
+                        <p class="card-text">
+                            Regular coding contests and hackathons to challenge problem-solving abilities and foster competitive programming skills.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <h3 class="card-title">Industry Connect</h3>
+                        <p class="card-text">
+                            Regular interactions with industry professionals through guest lectures, panel discussions, and networking events.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeo4lgwD9LcC2CBF3p1EGzljW8EOiP1BIpVFU8Hph/6i9aO5" crossorigin="anonymous"></script>
+    <!-- Join Section -->
+    <section class="section">
+        <div class="container text-center">
+            <h2 class="section-title">Join Our Community</h2>
+            <p class="card-text mb-4">Be part of a dynamic community of tech enthusiasts and innovators.</p>
+            <a href="/pictcsi/join" class="btn btn-primary">Join Now</a>
+        </div>
+    </section>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="footer-text mb-0">© 2024 OnClubHub. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 

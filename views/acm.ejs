@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PICT ACM - OnClubHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+        }
+
+        .navbar {
+            background: rgba(33, 33, 33, 0.95);
+            border-bottom: 1px solid #404040;
+            padding: 1rem 2rem;
+        }
+
+        .navbar-brand {
+            color: #ffffff !important;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .nav-link {
+            color: #b3b3b3 !important;
+            transition: color 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .nav-link:hover {
+            color: #ffffff !important;
+        }
+
+        .club-header {
+            background: rgba(33, 33, 33, 0.5);
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .club-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(64, 64, 64, 0.3), rgba(45, 45, 45, 0.3));
+            z-index: 1;
+        }
+
+        .club-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .club-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ffffff, #b3b3b3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .club-subtitle {
+            font-size: 1.2rem;
+            color: #b3b3b3;
+            margin-bottom: 2rem;
+        }
+
+        .section {
+            padding: 60px 0;
+            background: rgba(33, 33, 33, 0.95);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: #ffffff;
+        }
+
+        .card {
+            background: rgba(45, 45, 45, 0.5);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #404040;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: #666666;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .card-text {
+            color: #b3b3b3;
+            line-height: 1.6;
+        }
+
+        .btn-primary {
+            background: #404040;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: #4d4d4d;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #b3b3b3;
+            font-size: 1.1rem;
+        }
+
+        .footer {
+            background: rgba(33, 33, 33, 0.95);
+            padding: 40px 0;
+            border-top: 1px solid #404040;
+        }
+
+        .footer-text {
+            color: #808080;
+        }
+
+        .social-links a {
+            color: #808080;
+            margin: 0 10px;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">OnClubHub</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/myclub">My Club</a>
+                    </li>
+                    <% if (typeof user !== 'undefined' && user) { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">Sign Out</a>
+                        </li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/signin">Sign In</a>
+                        </li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Club Header -->
+    <section class="club-header">
+        <div class="container">
+            <div class="club-content">
+                <h1 class="club-title">PICT ACM</h1>
+                <p class="club-subtitle">Association for Computing Machinery - PICT Student Chapter</p>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number">120+</div>
+                        <div class="stat-label">Members</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">15+</div>
+                        <div class="stat-label">Events</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">8+</div>
+                        <div class="stat-label">Projects</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">About ACM</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <h3 class="card-title">Our Mission</h3>
+                        <p class="card-text">
+                            The PICT ACM Student Chapter is dedicated to advancing the art, science, engineering, and application of information technology. We foster a community of computing professionals and students who are passionate about technology and innovation.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <h3 class="card-title">What We Do</h3>
+                        <p class="card-text">
+                            We organize workshops, hackathons, coding competitions, and technical talks. Our members get opportunities to network with industry professionals, participate in research projects, and develop practical skills through hands-on experience.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Activities Section -->
+    <section class="section" style="background: rgba(26, 26, 26, 0.95);">
+        <div class="container">
+            <h2 class="section-title">Our Activities</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <h3 class="card-title">Technical Workshops</h3>
+                        <p class="card-text">
+                            Regular workshops on emerging technologies, programming languages, and development tools to enhance technical skills.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <h3 class="card-title">Hackathons</h3>
+                        <p class="card-text">
+                            Annual hackathons where students can showcase their creativity and problem-solving skills through innovative projects.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <h3 class="card-title">Industry Talks</h3>
+                        <p class="card-text">
+                            Guest lectures and panel discussions with industry experts to provide insights into current trends and career opportunities.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Join Section -->
+    <section class="section">
+        <div class="container text-center">
+            <h2 class="section-title">Join Our Community</h2>
+            <p class="card-text mb-4">Be part of a vibrant community of tech enthusiasts and innovators.</p>
+            <a href="/acm/join" class="btn btn-primary">Join Now</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="footer-text mb-0">© 2024 OnClubHub. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
