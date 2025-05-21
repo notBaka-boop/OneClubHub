@@ -15,19 +15,25 @@ const Club = require('./models/Club');
 const Application = require('./models/Application');
 
 // MongoDB connection
-mongoose.connect('mongodb://localhost:27017/onclubhub', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/onclubhub', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
 .then(() => console.log('Connected to MongoDB'))
-.catch(err => console.error('MongoDB connection error:', err));
+.catch(err => {
+    console.error('MongoDB connection error:', err);
+    process.exit(1); // Exit if cannot connect to database
+});
 
 // Session configuration
 app.use(session({
-    secret: 'your-secret-key',
+    secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false } // set to true if using https
+    cookie: { 
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
 }));
 
 app.use(express.json()); 
@@ -36,7 +42,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
-app.use(express.static(path.join(__dirname, "images")));
+app.use('/images', express.static(path.join(__dirname, "public/images")));
 
 // At the top of your app.js file
 let userData = {
