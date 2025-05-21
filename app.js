@@ -57,7 +57,8 @@ let users = [
         email: 'rahul.kumar@gmail.com',
         enrollment: 'F24CE005',
         branch: 'Computer Engineering',
-        status: 'active'
+        status: 'active',
+        password: 'rahul123'
     },
     {
         id: 2,
@@ -128,31 +129,32 @@ app.get("/home", (req, res) => {
 });
 
 app.get("/clubs", (req, res) => {
-    if (!req.session.user) {
-        return res.redirect("/signin");
-    }
     res.render("clubs.ejs", { user: req.session.user });
+});
+
+app.get("/csi", (req, res) => {
+    res.render("csi.ejs", { user: req.session.user });
 });
 
 app.get("/pictcsi", (req, res) => {
     res.render("csi.ejs", { user: req.session.user });
-})
+});
 
 app.get("/acm", (req, res) => {
     res.render("acm.ejs", { user: req.session.user });
-})
+});
 
 app.get("/myclub", (req, res) => {
-    res.render("myclub.ejs");
-})
+    res.render("myclub.ejs", { user: req.session.user });
+});
 
 app.get("/pictcsi/join", (req, res) => {
-    res.render("join.ejs");
-})
+    res.render("join.ejs", { user: req.session.user });
+});
 
 app.get("/myprofile", (req, res) => {
-    res.render("myprofile.ejs", {user: userData});
-})
+    res.render("myprofile.ejs", { user: req.session.user });
+});
 
 app.get("/logout", (req, res) => {
     req.session.destroy((err) => {
@@ -164,12 +166,12 @@ app.get("/logout", (req, res) => {
 });
 
 app.get("/signin", (req, res) => {
-    res.render("signin");
+    res.render("signin", { error: null });
 });
 
 app.get("/notification", (req, res) => {
-    res.render("notification.ejs");
-})
+    res.render("notification.ejs", { user: req.session.user });
+});
 
 // Route for Chat Page
 app.get("/chat", (req, res) => {
@@ -226,7 +228,7 @@ io.on("connection", (socket) => {
 
 // Routes
 app.get('/signin', (req, res) => {
-    res.render('signin');
+    res.render('signin', { error: null });
 });
 
 app.post('/signin', async (req, res) => {
@@ -243,28 +245,23 @@ app.post('/signin', async (req, res) => {
         return res.redirect('/admin/dashboard');
     }
     
-    try {
-        // Regular user authentication logic
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.render('signin', { error: 'Invalid email or password' });
-        }
+    // Regular user authentication using mock data
+    const user = users.find(u => u.email === email);
+    
+    if (!user) {
+        return res.render('signin', { error: 'Invalid email or password' });
+    }
 
-        // In a real application, you would verify the password hash here
-        if (password !== user.password) { // Replace with proper password verification
-            return res.render('signin', { error: 'Invalid email or password' });
-        }
-
+    if (user.password === password) {
         req.session.user = {
             name: user.name,
             email: user.email,
             isAdmin: false
         };
-        res.redirect('/clubs');
-    } catch (error) {
-        console.error('Sign in error:', error);
-        res.render('signin', { error: 'An error occurred during sign in' });
+        return res.redirect('/clubs');
     }
+
+    return res.render('signin', { error: 'Invalid email or password' });
 });
 
 // Admin routes with authentication
