@@ -337,12 +337,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        // Initialize Socket.IO with error handling
+        // Initialize Socket.IO with environment variables
         const socket = io({
             reconnection: true,
-            reconnectionAttempts: 5,
-            reconnectionDelay: 1000,
-            timeout: 10000
+            reconnectionAttempts: <%= process.env.SOCKET_RECONNECTION_ATTEMPTS || 5 %>,
+            reconnectionDelay: <%= process.env.SOCKET_RECONNECTION_DELAY || 1000 %>,
+            timeout: <%= process.env.SOCKET_TIMEOUT || 10000 %>
         });
 
         const messageInput = document.querySelector('.message-input');

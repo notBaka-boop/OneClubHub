@@ -1,3 +1,6 @@
+// Load environment variables
+require('dotenv').config();
+
 const express = require("express");
 const app = express();
 const http = require("http").createServer(app); // Create HTTP server
@@ -51,18 +54,20 @@ app.use(helmet({
 }));
 
 // CORS configuration
+const allowedOrigins = process.env.NODE_ENV === 'production'
+    ? [process.env.CORS_ORIGIN_PRODUCTION]
+    : [process.env.CORS_ORIGIN_DEVELOPMENT];
+
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production' 
-        ? ['https://your-vercel-domain.vercel.app'] 
-        : ['http://localhost:3000'],
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
     maxAge: 86400 // 24 hours
 }));
 
-// MongoDB connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/onclubhub', {
+// MongoDB connection with environment variables
+mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
@@ -72,9 +77,9 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/onclubhub
     process.exit(1); // Exit if cannot connect to database
 });
 
-// Session configuration
+// Session configuration with environment variables
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: { 
@@ -239,7 +244,7 @@ app.get("/chat", (req, res) => {
     res.render("chat", { user: req.session.user });
 });
 
-// Socket.io Communication
+// Socket.io Communication with environment variables
 io.on("connection", (socket) => {
     console.log("New user connected");
 
@@ -320,12 +325,12 @@ app.get('/signin', (req, res) => {
 app.post('/signin', async (req, res) => {
     const { email, password } = req.body;
     
-    // Check for admin credentials
-    if (email === 'admin@gmail.com' && password === 'admin123') {
+    // Check for admin credentials using environment variables
+    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
         req.session.isAdmin = true;
         req.session.user = {
             name: 'Admin User',
-            email: 'admin@gmail.com',
+            email: process.env.ADMIN_EMAIL,
             isAdmin: true
         };
         return res.redirect('/admin/dashboard');
@@ -562,9 +567,10 @@ process.on('uncaughtException', (error) => {
     process.exit(1); // Exit with failure
 });
 
+// Use environment variable for port
 const PORT = process.env.PORT || 3000;
 http.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
 });
 
 // const port = 8080;
