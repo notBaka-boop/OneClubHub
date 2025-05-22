@@ -337,20 +337,128 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        // Initialize Socket.IO
-        const socket = io();
+        // Initialize Socket.IO with error handling
+        const socket = io({
+            reconnection: true,
+            reconnectionAttempts: 5,
+            reconnectionDelay: 1000,
+            timeout: 10000
+        });
+
         const messageInput = document.querySelector('.message-input');
         const sendButton = document.querySelector('.send-button');
         const chatMessages = document.querySelector('.chat-messages');
         let currentRoom = 'csi-community'; // Default room
+        let isConnected = false;
+        let retryCount = 0;
+        const MAX_RETRIES = 3;
 
-        // Join default room
-        socket.emit('joinRoom', currentRoom);
+        // Show error message to user
+        function showError(message, isFatal = false) {
+            const errorHTML = `
+                <div class="message error ${isFatal ? 'fatal' : ''}">
+                    ${message}
+                    ${!isFatal ? '<button class="retry-btn">Retry</button>' : ''}
+                </div>
+            `;
+            chatMessages.insertAdjacentHTML('beforeend', errorHTML);
+            
+            if (!isFatal) {
+                const retryBtn = chatMessages.querySelector('.retry-btn:last-child');
+                retryBtn.addEventListener('click', () => {
+                    retryBtn.parentElement.remove();
+                    loadChatHistory(currentRoom);
+                });
+            }
+        }
 
-        // Load chat history
+        // Cleanup function
+        function cleanup() {
+            if (isConnected) {
+                socket.off('message');
+                socket.off('error');
+                socket.off('connect');
+                socket.off('disconnect');
+                socket.off('connect_error');
+                socket.off('reconnect_attempt');
+                isConnected = false;
+            }
+        }
+
+        // Initialize socket connection
+        function initializeSocket() {
+            cleanup(); // Clean up any existing listeners
+
+            // Join default room
+            socket.emit('joinRoom', currentRoom);
+
+            // Socket event handlers
+            socket.on('message', handleNewMessage);
+            socket.on('error', handleSocketError);
+            socket.on('connect', handleConnect);
+            socket.on('disconnect', handleDisconnect);
+            socket.on('connect_error', handleConnectionError);
+            socket.on('reconnect_attempt', handleReconnectAttempt);
+
+            isConnected = true;
+        }
+
+        // Event handlers
+        function handleNewMessage(data) {
+            try {
+                if (!data || !data.content || !data.sender) {
+                    throw new Error('Invalid message data received');
+                }
+
+                const isSent = data.sender === '<%= user._id %>';
+                const messageHTML = `
+                    <div class="message ${isSent ? 'sent' : 'received'}">
+                        ${data.content}
+                        <div class="message-time">${new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                    </div>
+                `;
+                chatMessages.insertAdjacentHTML('beforeend', messageHTML);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } catch (error) {
+                console.error('Error handling new message:', error);
+                showError('Failed to display message');
+            }
+        }
+
+        function handleSocketError(error) {
+            console.error('Socket error:', error);
+            showError(error.message || 'Failed to send message');
+        }
+
+        function handleConnect() {
+            console.log('Connected to Socket.IO server');
+            retryCount = 0;
+            loadChatHistory(currentRoom);
+        }
+
+        function handleDisconnect() {
+            console.log('Disconnected from Socket.IO server');
+            showError('Connection lost. Attempting to reconnect...');
+        }
+
+        function handleConnectionError(error) {
+            console.error('Connection error:', error);
+            showError('Failed to connect to server');
+        }
+
+        function handleReconnectAttempt(attemptNumber) {
+            console.log(`Reconnection attempt ${attemptNumber}`);
+            showError(`Reconnecting... Attempt ${attemptNumber}`);
+        }
+
+        // Load chat history with retry mechanism
         async function loadChatHistory(room) {
             try {
                 const response = await fetch(`/api/messages/${room}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const messages = await response.json();
                 
                 // Clear existing messages
@@ -358,27 +466,47 @@
                 
                 // Add messages to chat
                 messages.forEach(msg => {
-                    const isSent = msg.sender === '<%= user._id %>';
-                    const messageHTML = `
-                        <div class="message ${isSent ? 'sent' : 'received'}">
-                            ${msg.content}
-                            <div class="message-time">${new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                        </div>
-                    `;
-                    chatMessages.insertAdjacentHTML('beforeend', messageHTML);
+                    try {
+                        const isSent = msg.sender === '<%= user._id %>';
+                        const messageHTML = `
+                            <div class="message ${isSent ? 'sent' : 'received'}">
+                                ${msg.content}
+                                <div class="message-time">${new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                            </div>
+                        `;
+                        chatMessages.insertAdjacentHTML('beforeend', messageHTML);
+                    } catch (error) {
+                        console.error('Error rendering message:', error);
+                    }
                 });
                 
                 // Scroll to bottom
                 chatMessages.scrollTop = chatMessages.scrollHeight;
+                retryCount = 0;
             } catch (error) {
                 console.error('Error loading chat history:', error);
+                if (retryCount < MAX_RETRIES) {
+                    retryCount++;
+                    setTimeout(() => loadChatHistory(room), 1000 * retryCount);
+                } else {
+                    showError('Failed to load messages after multiple attempts', true);
+                }
             }
         }
 
-        // Send message
+        // Send message with validation
         function sendMessage() {
-            const message = messageInput.value.trim();
-            if (message) {
+            try {
+                const message = messageInput.value.trim();
+                if (!message) {
+                    return;
+                }
+
+                if (message.length > 1000) {
+                    showError('Message is too long (max 1000 characters)');
+                    return;
+                }
+
                 // Create message data
                 const messageData = {
                     message: message,
@@ -391,76 +519,81 @@
 
                 // Clear input
                 messageInput.value = '';
-
-                // Add message to UI immediately
-                const messageHTML = `
-                    <div class="message sent">
-                        ${message}
-                        <div class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                    </div>
-                `;
-                chatMessages.insertAdjacentHTML('beforeend', messageHTML);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } catch (error) {
+                console.error('Error sending message:', error);
+                showError('Failed to send message');
             }
         }
 
-        // Handle received messages
-        socket.on('message', (data) => {
-            const isSent = data.sender === '<%= user._id %>';
-            const messageHTML = `
-                <div class="message ${isSent ? 'sent' : 'received'}">
-                    ${data.content}
-                    <div class="message-time">${new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                </div>
-            `;
-            chatMessages.insertAdjacentHTML('beforeend', messageHTML);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        });
-
-        // Event listeners
-        sendButton.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
+        // Event listeners with error handling
+        const sendMessageHandler = () => {
+            try {
                 sendMessage();
+            } catch (error) {
+                console.error('Error in send message handler:', error);
+                showError('Failed to send message');
             }
-        });
+        };
 
-        // Chat switching
+        const enterKeyHandler = (e) => {
+            try {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            } catch (error) {
+                console.error('Error in enter key handler:', error);
+                showError('Failed to send message');
+            }
+        };
+
+        // Add event listeners with error handling
+        try {
+            sendButton.addEventListener('click', sendMessageHandler);
+            messageInput.addEventListener('keypress', enterKeyHandler);
+        } catch (error) {
+            console.error('Error adding event listeners:', error);
+            showError('Failed to initialize chat interface', true);
+        }
+
+        // Chat switching with error handling
         const chatItems = document.querySelectorAll('.chat-item');
         chatItems.forEach(item => {
             item.addEventListener('click', () => {
-                // Remove active class from all items
-                chatItems.forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
+                try {
+                    // Remove active class from all items
+                    chatItems.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
 
-                // Update current room and chat title
-                const roomName = item.querySelector('.chat-name').textContent.trim();
-                currentRoom = roomName.toLowerCase().replace(/\s+/g, '-');
-                document.querySelector('.chat-title').textContent = roomName;
+                    // Update current room and chat title
+                    const roomName = item.querySelector('.chat-name').textContent.trim();
+                    currentRoom = roomName.toLowerCase().replace(/\s+/g, '-');
+                    document.querySelector('.chat-title').textContent = roomName;
 
-                // Leave current room and join new room
-                socket.emit('joinRoom', currentRoom);
+                    // Leave current room and join new room
+                    socket.emit('joinRoom', currentRoom);
 
-                // Load chat history for new room
-                loadChatHistory(currentRoom);
+                    // Load chat history for new room
+                    loadChatHistory(currentRoom);
+                } catch (error) {
+                    console.error('Error switching chat:', error);
+                    showError('Failed to switch chat room');
+                }
             });
         });
 
+        // Initialize socket connection
+        try {
+            initializeSocket();
+        } catch (error) {
+            console.error('Error initializing socket:', error);
+            showError('Failed to initialize chat connection', true);
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', cleanup);
+
         // Load initial chat history
         loadChatHistory(currentRoom);
-
-        // Debug connection
-        socket.on('connect', () => {
-            console.log('Connected to Socket.IO server');
-        });
-
-        socket.on('disconnect', () => {
-            console.log('Disconnected from Socket.IO server');
-        });
-
-        socket.on('error', (error) => {
-            console.error('Socket.IO error:', error);
-        });
     </script>
 </body>
 </html>

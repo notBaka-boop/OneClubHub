@@ -76,11 +76,16 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/onclubhub
 app.use(session({
     secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: { 
         secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        sameSite: 'strict',
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
-    }
+    },
+    name: 'sessionId', // Don't use default 'connect.sid'
+    rolling: true, // Refresh session on activity
+    unset: 'destroy' // Remove session when unset
 }));
 
 app.use(express.json()); 
@@ -238,19 +243,40 @@ app.get("/chat", (req, res) => {
 io.on("connection", (socket) => {
     console.log("New user connected");
 
+    // Error handler for socket
+    socket.on('error', (error) => {
+        console.error('Socket error:', error);
+        socket.emit('error', { message: 'An error occurred' });
+    });
+
     // Join a chat room
-    socket.on('joinRoom', (room) => {
-        socket.join(room);
-        console.log(`User joined room: ${room}`);
+    socket.on('joinRoom', async (room) => {
+        try {
+            if (!room) {
+                throw new Error('Room name is required');
+            }
+            socket.join(room);
+            console.log(`User joined room: ${room}`);
+        } catch (error) {
+            console.error('Error joining room:', error);
+            socket.emit('error', { message: 'Failed to join room' });
+        }
     });
 
     // Handle new messages
     socket.on('chatMessage', async (data) => {
         try {
-            console.log('Received message:', data); // Debug log
+            if (!data || !data.message || !data.room || !data.sender) {
+                throw new Error('Invalid message data');
+            }
             
             const { message, room, sender } = data;
             
+            // Validate message length
+            if (message.length > 1000) {
+                throw new Error('Message too long');
+            }
+
             // Save message to database
             const newMessage = new Message({
                 sender: sender,
@@ -259,7 +285,6 @@ io.on("connection", (socket) => {
             });
             
             await newMessage.save();
-            console.log('Message saved to database:', newMessage); // Debug log
 
             // Broadcast message to room
             io.to(room).emit('message', {
@@ -267,15 +292,23 @@ io.on("connection", (socket) => {
                 sender: sender,
                 timestamp: new Date()
             });
-            
-            console.log('Message broadcasted to room:', room); // Debug log
         } catch (error) {
             console.error('Error handling message:', error);
+            socket.emit('error', { 
+                message: error.message || 'Failed to send message',
+                type: error.name
+            });
         }
     });
 
+    // Handle disconnection
     socket.on("disconnect", () => {
-        console.log("User disconnected");
+        try {
+            console.log("User disconnected");
+            // Clean up any resources if needed
+        } catch (error) {
+            console.error('Error during disconnect:', error);
+        }
     });
 });
 
@@ -505,6 +538,28 @@ app.get('/api/messages/:room', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Error fetching messages' });
     }
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error('Unhandled error:', err);
+    res.status(500).json({
+        error: 'Internal Server Error',
+        message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
+    });
+});
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    // Application specific logging, throwing an error, or other logic here
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+    console.error('Uncaught Exception:', error);
+    // Perform cleanup if needed
+    process.exit(1); // Exit with failure
 });
 
 const PORT = process.env.PORT || 3000;
