@@ -19,6 +19,74 @@ const User = require('./models/User');
 const Club = require('./models/Club');
 const Application = require('./models/Application');
 
+// Vercel serverless configuration
+const isVercel = process.env.VERCEL;
+const FUNCTION_TIMEOUT = 9000; // 9 seconds (Vercel's limit is 10s)
+const MAX_MEMORY_USAGE = 900; // MB (Vercel's limit is 1024MB)
+
+// Memory monitoring
+function checkMemoryUsage() {
+    const used = process.memoryUsage();
+    const memoryUsageMB = Math.round(used.heapUsed / 1024 / 1024);
+    
+    if (memoryUsageMB > MAX_MEMORY_USAGE) {
+        console.error(`Memory usage exceeded: ${memoryUsageMB}MB`);
+        return false;
+    }
+    return true;
+}
+
+// MongoDB connection with Vercel optimization
+let mongooseConnection = null;
+
+async function connectDB() {
+    try {
+        if (mongooseConnection) {
+            return mongooseConnection;
+        }
+
+        mongooseConnection = await mongoose.connect(process.env.MONGODB_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            serverSelectionTimeoutMS: 5000,
+            socketTimeoutMS: 45000,
+            maxPoolSize: isVercel ? 1 : 10,
+            minPoolSize: 0,
+            maxIdleTimeMS: 10000
+        });
+
+        console.log('Connected to MongoDB');
+        return mongooseConnection;
+    } catch (error) {
+        console.error('MongoDB connection error:', error);
+        throw error;
+    }
+}
+
+// Initialize database connection
+connectDB().catch(err => {
+    console.error('Failed to connect to MongoDB:', err);
+    process.exit(1);
+});
+
+// Vercel-specific middleware
+app.use((req, res, next) => {
+    // Check memory usage
+    if (!checkMemoryUsage()) {
+        return res.status(503).json({
+            error: 'Service Unavailable',
+            message: 'Server is under heavy load'
+        });
+    }
+
+    // Set timeout for Vercel
+    if (isVercel) {
+        req.setTimeout(FUNCTION_TIMEOUT);
+    }
+
+    next();
+});
+
 // Security middleware
 app.use(helmet({
     contentSecurityPolicy: {
@@ -53,31 +121,18 @@ app.use(helmet({
     xssFilter: true
 }));
 
-// CORS configuration
-const allowedOrigins = process.env.NODE_ENV === 'production'
-    ? [process.env.CORS_ORIGIN_PRODUCTION]
-    : [process.env.CORS_ORIGIN_DEVELOPMENT];
-
+// CORS configuration for Vercel
 app.use(cors({
-    origin: allowedOrigins,
+    origin: process.env.NODE_ENV === 'production' 
+        ? [process.env.CORS_ORIGIN_PRODUCTION] 
+        : [process.env.CORS_ORIGIN_DEVELOPMENT],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
-    maxAge: 86400 // 24 hours
+    maxAge: 86400
 }));
 
-// MongoDB connection with environment variables
-mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-.then(() => console.log('Connected to MongoDB'))
-.catch(err => {
-    console.error('MongoDB connection error:', err);
-    process.exit(1); // Exit if cannot connect to database
-});
-
-// Session configuration with environment variables
+// Session configuration with Vercel optimization
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -86,16 +141,17 @@ app.use(session({
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
         sameSite: 'strict',
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        maxAge: 24 * 60 * 60 * 1000
     },
-    name: 'sessionId', // Don't use default 'connect.sid'
-    rolling: true, // Refresh session on activity
-    unset: 'destroy' // Remove session when unset
+    name: 'sessionId',
+    rolling: true,
+    unset: 'destroy'
 }));
 
-app.use(express.json()); 
-app.use(express.urlencoded({ extended: true })); 
-app.use(bodyParser.urlencoded({ extended: true }));
+// Body parsing middleware
+app.use(express.json({ limit: '1mb' })); 
+app.use(express.urlencoded({ extended: true, limit: '1mb' })); 
+app.use(bodyParser.urlencoded({ extended: true, limit: '1mb' }));
 
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
@@ -248,10 +304,18 @@ app.get("/chat", (req, res) => {
 io.on("connection", (socket) => {
     console.log("New user connected");
 
+    // Set timeout for Vercel
+    if (isVercel) {
+        socket.setTimeout(FUNCTION_TIMEOUT);
+    }
+
     // Error handler for socket
     socket.on('error', (error) => {
         console.error('Socket error:', error);
-        socket.emit('error', { message: 'An error occurred' });
+        socket.emit('error', { 
+            message: 'An error occurred',
+            type: error.name
+        });
     });
 
     // Join a chat room
@@ -310,7 +374,7 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         try {
             console.log("User disconnected");
-            // Clean up any resources if needed
+            socket.removeAllListeners();
         } catch (error) {
             console.error('Error during disconnect:', error);
         }
@@ -547,7 +611,24 @@ app.get('/api/messages/:room', async (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-    console.error('Unhandled error:', err);
+    console.error('Error:', err);
+
+    // Handle specific errors
+    if (err.name === 'TimeoutError') {
+        return res.status(504).json({
+            error: 'Gateway Timeout',
+            message: 'The request took too long to process'
+        });
+    }
+
+    if (err.name === 'MongooseError') {
+        return res.status(503).json({
+            error: 'Service Unavailable',
+            message: 'Database connection error'
+        });
+    }
+
+    // Default error response
     res.status(500).json({
         error: 'Internal Server Error',
         message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
@@ -557,21 +638,45 @@ app.use((err, req, res, next) => {
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {
     console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-    // Application specific logging, throwing an error, or other logic here
+    if (isVercel) {
+        process.exit(1);
+    }
 });
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
     console.error('Uncaught Exception:', error);
-    // Perform cleanup if needed
-    process.exit(1); // Exit with failure
+    if (isVercel) {
+        process.exit(1);
+    }
 });
 
-// Use environment variable for port
-const PORT = process.env.PORT || 3000;
-http.listen(PORT, () => {
-    console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
-});
+// Handle Vercel function termination
+if (isVercel) {
+    process.on('SIGTERM', async () => {
+        console.log('SIGTERM received. Cleaning up...');
+        try {
+            if (mongooseConnection) {
+                await mongooseConnection.close();
+                console.log('Database connection closed');
+            }
+        } catch (error) {
+            console.error('Error during cleanup:', error);
+        }
+        process.exit(0);
+    });
+}
+
+// Export for Vercel
+if (isVercel) {
+    module.exports = app;
+} else {
+    // Regular server startup
+    const PORT = process.env.PORT || 3000;
+    http.listen(PORT, () => {
+        console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
+    });
+}
 
 // const port = 8080;
 // app.listen(port, (req, res) => {
